@@ -18,14 +18,16 @@
 // });
 
 //Express.js
-
+const cors = require("cors");
 const express = require("express")
 const data = require("./data.js")
 
 const server = express();
 
+server.use(cors({origin: true}));
+
 server.get("/",(req,res)=>{
-    res.send("Express'ten merhaba")
+    res.send("Express'ten merhaba...")
 });
 
 server.get("/aktorler",(req,res)=>{
