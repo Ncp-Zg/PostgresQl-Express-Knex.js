@@ -23,11 +23,12 @@ const express = require("express")
 const data = require("./data.js")
 
 const server = express();
+server.use(express.json());
 
 server.use(cors({origin: true}));
 
 server.get("/",(req,res)=>{
-    res.send("Express'ten merhaba...")
+    res.send("Express'ten merhaba...cd")
 });
 
 server.get("/aktorler",(req,res)=>{
@@ -35,6 +36,7 @@ server.get("/aktorler",(req,res)=>{
 });
 
 server.get("/aktorler/:id",(req,res)=>{
+    console.log("req.body",req.body)
     const{id}=req.params
     const aktor = data.find(aktor => aktor.id === parseInt(id))
     if(aktor) {
