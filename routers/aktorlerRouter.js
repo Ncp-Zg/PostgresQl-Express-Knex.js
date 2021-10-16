@@ -1,29 +1,42 @@
 const router = require("express").Router();
 let data = require("../data");
-
+const Aktor = require("../data/data-model");
 const cors = require("cors");
 router.use(cors({ origin: true }));
 
 router.get("/", (req, res) => {
-  res.status(200).json(data);
+  Aktor.findAktor()
+    .then((aktorler) => {
+      res.status(200).json(aktorler);
+    })
+    .catch((error) => {
+      next({
+        statusCode: 500,
+        errorMessage: "Aktorler alınırken hata olustu",
+        error,
+      });
+    });
+  //   res.status(200).json(data);
 });
 
-let next_id = 4;
-
 router.post("/", (req, res, next) => {
-  let yeni_aktor = req.body;
+  const yeniAktor = req.body;
 
-  if (!yeni_aktor.isim) {
-     //errorHandling
-     next({ statusCode:400,errorMessage : "Aktor eklemek icin isim girin." });
-  } else if(yeni_aktor.isim && !yeni_aktor.filmler){
-     //errorHandling
-     next({ statusCode:400,errorMessage : "Aktor eklemek icin filmler girin." });
+  if(!yeniAktor.isim){
+      next({
+          statusCode:400,
+          errorMessage:"Aktor eklemek icin isim girmelisiniz."
+      })
   }else {
-   yeni_aktor.id = next_id;
-    next_id++;
-    data.push(yeni_aktor);
-    res.status(201).json(yeni_aktor);
+      Aktor.addAktor(yeniAktor).then(added =>{
+          res.status(201).json(added);
+      }).catch(error=>{
+          next({
+              statusCode:500,
+              errorMessage:"Aktor eklerken hata olustu",
+              error
+          })
+      })
   }
 });
 
